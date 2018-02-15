@@ -1,0 +1,10 @@
+<resources>
+    <string name="sr_design_app">2018 U of M - EE Senior Design App</string>
+    <string name="edit_message">Enter a Message</string>
+    <string name="button_camera">Take New Picture</string>
+    <string name="button_choose">Choose Image from Gallery</string>
+    <string name="button_accept">Accept/Proceed</string>
+    <string name="app_name">PhotoMod</string>
+    <string name="title_activity_display_basic_image">DisplayBasicImageActivity</string>
+
+</resources>
