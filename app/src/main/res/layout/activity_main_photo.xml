@@ -25,14 +25,16 @@
         android:id="@+id/button_camera"
         android:layout_width="165dp"
         android:layout_height="59dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="3dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        android:onClick="TakeNewPhoto"
         android:text="@string/button_camera"
+        app:layout_constraintBottom_toTopOf="@+id/imagePhoto"
         app:layout_constraintEnd_toStartOf="@+id/button_choose"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/SrDesignApp" />
+        app:layout_constraintTop_toBottomOf="@+id/SrDesignApp"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/button_choose"
@@ -62,12 +64,13 @@
         app:srcCompat="@mipmap/ic_launcher" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button_accept"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:onClick="acceptPicture"
         android:text="@string/button_accept"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

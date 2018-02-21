@@ -11,21 +11,36 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/mn_gophers_foreground"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/mn_gophers_foreground"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainPhotoActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--Note: We are using getUriForFile(Context, String, File) which returns a content:// URI.
+        For more recent apps targeting Android 7.0 (API level 24) and higher, passing a file:// URI across
+        a package boundary causes a FileUriExposedException. Therefore, we now present a more generic way of
+        storing images using a FileProvider.-->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.android.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
+
         <activity
             android:name=".DisplayBasicImageActivity"
             android:label="@string/title_activity_display_basic_image"
+            android:parentActivityName=".MainPhotoActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
