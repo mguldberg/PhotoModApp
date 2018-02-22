@@ -4,6 +4,7 @@
     <string name="button_camera">Take New Picture</string>
     <string name="button_choose">Choose Image from Gallery</string>
     <string name="button_accept">Accept/Proceed</string>
+    <string name="slider_value">Slider Value</string>
     <string name="app_name">PhotoMod</string>
     <string name="title_activity_display_basic_image">DisplayBasicImageActivity</string>
 

@@ -23,7 +23,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -33,6 +35,7 @@ import static android.os.Environment.*;
 
 public class MainPhotoActivity extends AppCompatActivity {
     private static final int CAMERA_REQUEST = 1888;
+    public static final int PHOTO_GALLERY_REQUEST = 1961;
     private ImageView imageToManipulate;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private String currentPhotoPath;
@@ -45,6 +48,8 @@ public class MainPhotoActivity extends AppCompatActivity {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+    private Bitmap bitmapSelectedImageFromGallery;
+    public Uri galleryImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +99,9 @@ public class MainPhotoActivity extends AppCompatActivity {
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);  // or use this CAMERA_REQUEST
 
+                galleryImageUri = photoURI;
+                Log.i(TAG, " " + galleryImageUri );
+
                 Log.i(TAG, "photoFile is NOT null");
             } else if (photoFile == null) {
                 Log.i(TAG, "photoFile is null");
@@ -111,12 +119,43 @@ public class MainPhotoActivity extends AppCompatActivity {
         Toast showErr = Toast.makeText(context, requestCode + " " + resultCode, shortDuration);
         showErr.show();
 
+        //we are in here because we took a picture with the camera
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            Log.i(TAG, "got into onActivityResult and next to BitmapFactory");
+            Log.i(TAG, "got into onActivityResult and because we took a picture with the Camera");
 
             //set local variable to return of getBitmap
-            imageToManipulate.setImageBitmap(BitmapFactory.decodeFile(currentPhotoPath));
+            bitmapSelectedImageFromGallery = BitmapFactory.decodeFile(currentPhotoPath);
+            imageToManipulate.setImageBitmap(bitmapSelectedImageFromGallery);
+
         }
+
+        //we are in here because we chose a picture from the gallery
+        if (requestCode == PHOTO_GALLERY_REQUEST && resultCode == Activity.RESULT_OK) {
+            Log.i(TAG, "got into onActivityResult and because we took chose a picture from the gallery");
+
+            //address of the image selected from the gallery
+            galleryImageUri = data.getData();
+
+            //declare a stream to read the image data
+            InputStream inputStreamOfGalleryImage;
+
+            // handle the possible exception from getContentResolver
+            try {
+                inputStreamOfGalleryImage = getContentResolver().openInputStream(galleryImageUri);
+
+                //set image to picture selected from gallery
+                bitmapSelectedImageFromGallery = BitmapFactory.decodeStream(inputStreamOfGalleryImage);
+                imageToManipulate.setImageBitmap(bitmapSelectedImageFromGallery);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                // display message to user that we are unable to open the image from the gallery
+                Toast.makeText(this, "Unable to open image from gallery", Toast.LENGTH_LONG).show();
+
+            }
+
+        }
+
     }
 
     /**
@@ -171,10 +210,41 @@ public class MainPhotoActivity extends AppCompatActivity {
     return image;
     }
 
+    // Called when the user hits the Choose Image from Gallery button
+    public void chooseImageFromGallery (View view) {
+        //example Intent call for gallery...don't understand the arguments
+        // Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        Intent galleryPhotoPicker = new Intent(Intent.ACTION_PICK);
+
+        // where is the gallery data?
+        File pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        String pictureDirectoryPath = pictureDirectory.getPath();
+
+        // get the URI representation
+        Uri data = Uri.parse(pictureDirectoryPath);
+
+        // set the data type we want to see from the directory aka gallery - we want all image types
+        galleryPhotoPicker.setDataAndType(data, "image/*");
+
+        //start the activity and seed with a unique ID - PHOTO_GALLERY_REQUEST so in
+        //OnActivityResult it will know which reason it was entered, in this case we picked an image
+        //from the gallery
+        startActivityForResult(galleryPhotoPicker, PHOTO_GALLERY_REQUEST);
+
+    }
 
   // Called when the user hits the accept button
     public void acceptPicture (View view) {
+        Log.i(TAG, "got into acceptPicture " + galleryImageUri);
+
         Intent intent = new Intent(this, DisplayBasicImageActivity.class);
+
+        //Bundle bundleToPassToDisplayActivity=new Bundle();
+        //bundleToPassToDisplayActivity.put("imageToDisplayOnSecondScreen",  bitmapToPassToNextActivity);
+        //intent.putExtras(bundleToPassToDisplayActivity);
+        intent.setData(galleryImageUri);
+
+        Log.i(TAG, "got into acceptPicture #2" + galleryImageUri);
 
         // get value of editText from UI and put it in a local variable
         /* EditText editText = findViewById(R.id.editText);
