@@ -5,8 +5,10 @@
     <string name="button_choose">Choose Image from Gallery</string>
     <string name="button_accept">Accept/Proceed</string>
     <string name="slider_value">Slider Value</string>
-    <string name="number3"
-
+    <string name="number1">Num 1</string>
+    <string name="number2">Num 2</string>
+    <string name="number3">Sum</string>
+    <string name="add_button">Sum</string>
     <string name="app_name">PhotoMod</string>
     <string name="title_activity_display_basic_image">DisplayBasicImageActivity</string>
 
